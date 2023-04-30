@@ -1,0 +1,15 @@
+D:\UCV\An2Sem2\PSO-ProgramareaSistemelorDeOperare\LucrarePractica1_Simulare_SO\os_simulator\bin\Debug\net6.0\PrivateOS.exe
+D:\UCV\An2Sem2\PSO-ProgramareaSistemelorDeOperare\LucrarePractica1_Simulare_SO\os_simulator\bin\Debug\net6.0\PrivateOS.deps.json
+D:\UCV\An2Sem2\PSO-ProgramareaSistemelorDeOperare\LucrarePractica1_Simulare_SO\os_simulator\bin\Debug\net6.0\PrivateOS.runtimeconfig.json
+D:\UCV\An2Sem2\PSO-ProgramareaSistemelorDeOperare\LucrarePractica1_Simulare_SO\os_simulator\bin\Debug\net6.0\PrivateOS.dll
+D:\UCV\An2Sem2\PSO-ProgramareaSistemelorDeOperare\LucrarePractica1_Simulare_SO\os_simulator\bin\Debug\net6.0\PrivateOS.pdb
+D:\UCV\An2Sem2\PSO-ProgramareaSistemelorDeOperare\LucrarePractica1_Simulare_SO\os_simulator\obj\Debug\net6.0\PrivateOS.csproj.AssemblyReference.cache
+D:\UCV\An2Sem2\PSO-ProgramareaSistemelorDeOperare\LucrarePractica1_Simulare_SO\os_simulator\obj\Debug\net6.0\PrivateOS.GeneratedMSBuildEditorConfig.editorconfig
+D:\UCV\An2Sem2\PSO-ProgramareaSistemelorDeOperare\LucrarePractica1_Simulare_SO\os_simulator\obj\Debug\net6.0\PrivateOS.AssemblyInfoInputs.cache
+D:\UCV\An2Sem2\PSO-ProgramareaSistemelorDeOperare\LucrarePractica1_Simulare_SO\os_simulator\obj\Debug\net6.0\PrivateOS.AssemblyInfo.cs
+D:\UCV\An2Sem2\PSO-ProgramareaSistemelorDeOperare\LucrarePractica1_Simulare_SO\os_simulator\obj\Debug\net6.0\PrivateOS.csproj.CoreCompileInputs.cache
+D:\UCV\An2Sem2\PSO-ProgramareaSistemelorDeOperare\LucrarePractica1_Simulare_SO\os_simulator\obj\Debug\net6.0\PrivateOS.dll
+D:\UCV\An2Sem2\PSO-ProgramareaSistemelorDeOperare\LucrarePractica1_Simulare_SO\os_simulator\obj\Debug\net6.0\refint\PrivateOS.dll
+D:\UCV\An2Sem2\PSO-ProgramareaSistemelorDeOperare\LucrarePractica1_Simulare_SO\os_simulator\obj\Debug\net6.0\PrivateOS.pdb
+D:\UCV\An2Sem2\PSO-ProgramareaSistemelorDeOperare\LucrarePractica1_Simulare_SO\os_simulator\obj\Debug\net6.0\PrivateOS.genruntimeconfig.cache
+D:\UCV\An2Sem2\PSO-ProgramareaSistemelorDeOperare\LucrarePractica1_Simulare_SO\os_simulator\obj\Debug\net6.0\ref\PrivateOS.dll
