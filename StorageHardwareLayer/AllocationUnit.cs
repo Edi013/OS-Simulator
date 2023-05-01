@@ -13,10 +13,10 @@ namespace PrivateOS
         Alocation Unit refers to a single cluster.
         A cluster is a piece of storage with chosen size.
         This OS is form of clusters, the numbers is chosen.
-        The choices happens when 'the storage' is formated.
+        The choices happen when 'the storage' is formated.
          */
 
-        char[] storage ;
+        char[] storage;
         public AllocationUnit()
         {
             int size = Int32.Parse(ConfigurationManager.AppSettings["AllocationUnitSize"]);

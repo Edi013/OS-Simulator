@@ -10,15 +10,21 @@ namespace PrivateOS
     {
         /*
          This class represents a table of tuples.
-         Those are used to locate and rebuild a file stored in ore Storage
+         Those are used to locate and rebuild a file stored in _ HWStorage
          */
-        RoomTuple[] list;
+        RoomTuple[] table;
 
         public ROOM()
         {
             var size = Int32.Parse(System.Configuration.ConfigurationManager.AppSettings["ROOMSize"]);
-            list = new
+            table = new
                 RoomTuple[size];
+        }
+
+        public void Update(ROOM room)
+        {
+            for (int i = 0; i < table.Length; i++)
+                table[i] = room.table[i];
         }
 
     }
