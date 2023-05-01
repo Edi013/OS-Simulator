@@ -8,27 +8,35 @@
             {
                 var prompter = new Prompter();
                 var os = new OS();
-                var commands = new List<ICommand>() 
+                var commands = new List<ICommand>()
                 {
+                    new DirCommand(),
                 };
 
                 prompter.WelcomeUser();
                 
                 while (true)
                 {
-                    var command = prompter.GetCommandFromUser(commands);
+                    try
+                    {
+                        var command = prompter.GetCommandFromUser(commands);
                     
-                    command.Execute(os);
-                   
+                        command.Execute(os);
+                    }
+                    catch (CancelCommandException e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                    catch (CommandNotFound e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+
                     if (prompter.WantsToExit())
                     {
                         break;
                     }
                 }
-            }
-            catch (CancelCommandException e)
-            {
-                Console.WriteLine(e.Message);
             }
             catch (Exception e)
             {

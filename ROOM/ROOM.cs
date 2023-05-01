@@ -12,7 +12,7 @@ namespace PrivateOS
          This class represents a table of tuples.
          Those are used to locate and rebuild a file stored in _ HWStorage
          */
-        RoomTuple[] table;
+        public RoomTuple[] table { get; }
 
         public ROOM()
         {

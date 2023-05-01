@@ -25,5 +25,10 @@ namespace PrivateOS
             Size = size;
             FirstAllocationUnit = firstAllocationUnit;
         }
+
+        public override string ToString()
+        {
+            return $"Name: {Name} | Size: {Size} | FAU:{FirstAllocationUnit}";
+        }
     }
 }

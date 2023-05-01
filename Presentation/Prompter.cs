@@ -6,13 +6,6 @@
         {
         }
 
-        public void WelcomeUser()
-        {
-            Console.WriteLine("Welcome, user!");
-            Console.WriteLine("You are using Ghenea Eduard's OS");
-        }
-
-
         public ICommand GetCommandFromUser(List<ICommand> comands)
         {
             DisplayCommands(comands);
@@ -20,10 +13,12 @@
         }
         public void DisplayCommands(List<ICommand> comands)
         {
+            Console.WriteLine("Commands :");
             foreach (var command in comands)
             {
                 Console.WriteLine($"{command.Name} - {command.Description}");
             }
+            Console.WriteLine();
         }
         private ICommand AskForCommand(List<ICommand> comands)
         {
@@ -43,6 +38,7 @@
 
             throw new CommandNotFound();
         }
+
         public bool WantsToExit()
         {
             Console.WriteLine("If needed, input 'Y' to shut down:");
@@ -51,7 +47,11 @@
                 return true;
             return false;
         }
-
+        public void WelcomeUser()
+        {
+            Console.WriteLine("Welcome, user!");
+            Console.WriteLine("You are using Ghenea Eduard's OS\n\n");
+        }
         public void Cursor()
         {
             int milisecondsToWait = 350;
