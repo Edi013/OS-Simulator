@@ -5,20 +5,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PrivateOS
+namespace PrivateOS.Business
 {
+    [Serializable()]
     public class FAT
     {
         /*
             File Allocation Table 
         This table contains chains (pointers) for each file stored in storage space.
-        The size will be the number of clusters.
+        The noOfClusters will be the number of clusters.
          */
 
 
         //UInt16 = UnsignedInt16 should be used because numbers greater than 255 need 2 bytes ( octeti ) to be stored 
         // https://learn.microsoft.com/en-us/dotnet/standard/numerics
-        System.UInt16[] table;
+        public ushort[] table;
 
 
         // The first FATSize+ROOMSize clusters can't be used.
@@ -26,23 +27,29 @@ namespace PrivateOS
         // Therefore, we can use FAT's occupied indexes as flags:
         // e.g. 0 - end of linked list
         //      1 - bad cluster ( damaged cluster )
-        public static int EndOfChain = 0;
-        public static int BadCluster = 1;
-        public static int ReservedCluster = 2;
+        public static ushort EndOfChain = 0;
+        public static ushort BadCluster = 1;
+        public static ushort ReservedCluster = 2;
+        public static ushort UnusedCluster = 3;
 
         public FAT()
         {
-            int size = Int32.Parse(ConfigurationManager.AppSettings["NumberOfClusters"]);
-            table = new System.UInt16[size];
+            ushort noOfClusters = ushort.Parse(ConfigurationManager.AppSettings["NumberOfClusters"]);
+            table = new ushort[noOfClusters];
 
-            for (int i = 0; i < Int32.Parse(ConfigurationManager.AppSettings["FATSize"]); i++)
-                table[i] = 2;
+            ushort fatSize = ushort.Parse(ConfigurationManager.AppSettings["FATSize"]);
+            for (ushort i = 0; i < noOfClusters; i++)
+            {
+                if (i < fatSize)
+                    table[i] = ReservedCluster;
+                else
+                    table[i] = UnusedCluster;
+            }
         }
 
-        public void Update(FAT fat)
+        public void UpdatePosition(ushort index, ushort value)
         {
-            for(int i = 0; i < table.Length; i++)
-                table[i] = fat.table[i];
+            table[index] = value;
         }
     }
 }

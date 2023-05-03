@@ -8,52 +8,30 @@ namespace PrivateOS
         {
         }
 
-        public ICommand GetCommandFromUser(List<ICommand> comands)
+        public List<string> GetCommandFromUser()
         {
-            DisplayCommands(comands);
-            return AskForCommand(comands);
+            List<string> userCommand = AskForCommand();
+            return userCommand;
         }
-        private ICommand AskForCommand(List<ICommand> comands)
+        private List<string> AskForCommand()
         {
-            Console.WriteLine("Input command's name (white space to cancel ):\n");
+            Console.WriteLine("Input command's name :\n");
             
-            string userInput = Console.ReadLine();
+            string userInput = Console.ReadLine().ToLower();
             if (String.IsNullOrWhiteSpace(userInput))
             {
                 throw new CancelCommandException();
             }
 
-            foreach(ICommand command in comands)
+            List<string> result = new List<string>();
+            foreach (var word in userInput.Split(" "))
             {
-                if (command.Name == userInput)
-                    return command;
+                result.Add(word);
             }
 
-            throw new CommandNotFound();
+            return result;
         }
-        public void DisplayCommands(List<ICommand> commands)
-        {
-            Console.WriteLine("Commands :");
-            foreach (var command in commands)
-            {
-                Console.WriteLine($"{command.Name} - {command.Description}");
-                Console.WriteLine("Arguments :");
-                command.Arguments.ForEach
-                //List<CommandArgument> arguments;
-
-                if (!command.Arguments.Any())
-                {
-                    Console.WriteLine("This method supports no arguments");
-                    continue;
-                }
-                foreach (var argument in command.Arguments)
-                {
-                    Console.WriteLine("-   " + argument.Name + argument.Description);
-                }
-            }
-            Console.WriteLine();
-        }
-
+         
         public void BeginNewLine()
         {
             Console.Write("Edi_OS>");

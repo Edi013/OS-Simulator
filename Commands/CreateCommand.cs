@@ -15,6 +15,21 @@ namespace PrivateOS.Business
         public List<CommandArgument> Arguments =>
             new List<CommandArgument>()
             {
+                new CommandArgument()
+                {
+                    Name = "-ALFA",
+                    Description = "Generates alfabetic characters until given size is full",
+                },
+                new CommandArgument()
+                {
+                    Name = "-NUM",
+                    Description = "Generates numbers, 0-9, until given size is full",
+                },
+                new CommandArgument()
+                {
+                    Name = "-HEX",
+                    Description = "Generates hexazecimal numbers, 0-9, until given size is full",
+                },
             };
 
         public void Execute(OS os)

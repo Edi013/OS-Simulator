@@ -10,19 +10,17 @@ namespace PrivateOS
             {
                 var prompter = new Prompter();
                 var os = new OS();
-                var commands = new List<ICommand>()
-                {
-                    new DirCommand(),
-                };
+                List<ICommand> commands = BuildCommands();
 
                 prompter.WelcomeUser();
                 
                 while (true)
                 {
+                    prompter.BeginNewLine();
                     try
                     {
                         var command = prompter.GetCommandFromUser(commands);
-                    
+                        
                         command.Execute(os);
                     }
                     catch (CancelCommandException e)
@@ -44,6 +42,15 @@ namespace PrivateOS
             {
                 Console.WriteLine("Error happend, message: \n" + e.Message +"\n" + e.StackTrace);
             }
+        }
+
+        private static List<ICommand> BuildCommands()
+        {
+            return new List<ICommand>()
+                {
+                    new DirCommand(),
+                    new CreateCommand(),
+                };
         }
     }
 }

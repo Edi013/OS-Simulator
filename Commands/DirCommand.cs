@@ -6,13 +6,19 @@
         public string Description => "Display every file in current directory";
 
         public List<CommandArgument> Arguments => 
-            new List<CommandArgument>() 
+            new List<CommandArgument>()
             {
+                new CommandArgument()
+                {
+                    Name = "-a",
+                    Description = "Display more information for each file",
+                },
             };
 
         public DirCommand()
         {
         }
+
 
         public void Execute(OS os)
         {
