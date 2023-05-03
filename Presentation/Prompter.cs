@@ -8,12 +8,12 @@ namespace PrivateOS
         {
         }
 
-        public List<string> GetCommandFromUser()
+        public string AskForCommand()
         {
-            List<string> userCommand = AskForCommand();
+            string userCommand = GetCommandFromUser();
             return userCommand;
         }
-        private List<string> AskForCommand()
+        private string GetCommandFromUser()
         {
             Console.WriteLine("Input command's name :\n");
             
@@ -23,13 +23,7 @@ namespace PrivateOS
                 throw new CancelCommandException();
             }
 
-            List<string> result = new List<string>();
-            foreach (var word in userInput.Split(" "))
-            {
-                result.Add(word);
-            }
-
-            return result;
+            return userInput;
         }
          
         public void BeginNewLine()

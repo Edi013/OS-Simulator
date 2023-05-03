@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="PrivateOS.Business\**" />
+    <EmbeddedResource Remove="PrivateOS.Business\**" />
+    <None Remove="PrivateOS.Business\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
   </ItemGroup>
 

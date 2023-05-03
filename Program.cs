@@ -19,8 +19,12 @@ namespace PrivateOS
                     prompter.BeginNewLine();
                     try
                     {
-                        var command = prompter.GetCommandFromUser(commands);
-                        
+                        string command = prompter.AskForCommand();
+                        var commandName = command.Split(" ")[0];
+                        var attributes = command.Split(" ").Skip(1);
+                        var commandType = CommandResolver.ResolveCommand(commandName, attributes);
+
+                        ICommand comand = commandType.DeclaringType
                         command.Execute(os);
                     }
                     catch (CancelCommandException e)

@@ -8,15 +8,15 @@ namespace PrivateOS.Business
 {
     public class CommandResolver
     {
-        public static Type ResolveCommand(string commandName)
+        public static Type ResolveCommand(string commandName, List<string> attributes)
         {
             switch (commandName)
             {
                 case "dir":
-                    return typeof(DirCommand);
+                    return new DirCommand(attributes);
 
                 case "create":
-                    return typeof(CreateCommand);
+                    return new CreateCommand(attributes);
 
                 default:
                     throw new CommandNotFound();
