@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PrivateOS
+namespace PrivateOS.Business
 {
+    [Serializable()]
     public class ROOM
     {
         /*
@@ -16,15 +17,13 @@ namespace PrivateOS
 
         public ROOM()
         {
-            var size = Int32.Parse(System.Configuration.ConfigurationManager.AppSettings["ROOMSize"]);
+            ushort size = ushort.Parse(System.Configuration.ConfigurationManager.AppSettings["ROOMSize"]);
             table = new
                 RoomTuple[size];
         }
-
-        public void Update(ROOM room)
+        public void UpdatePosition(ushort index, RoomTuple value)
         {
-            for (int i = 0; i < table.Length; i++)
-                table[i] = room.table[i];
+            table[index] = value;
         }
 
     }

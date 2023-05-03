@@ -1,9 +1,18 @@
-﻿namespace PrivateOS
+﻿namespace PrivateOS.Business
 {
     public class DirCommand : ICommand
     {
         public string Name => "dir";
         public string Description => "Display every file in current directory";
+
+        public List<CommandArgument> Arguments => 
+            new List<CommandArgument>() 
+            {
+            };
+
+        public DirCommand()
+        {
+        }
 
         public void Execute(OS os)
         {

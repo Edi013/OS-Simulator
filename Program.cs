@@ -1,4 +1,6 @@
-﻿namespace PrivateOS
+﻿using PrivateOS.Business;
+
+namespace PrivateOS
 {
     class Bootstraper
     {

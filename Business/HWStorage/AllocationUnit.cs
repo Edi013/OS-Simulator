@@ -19,7 +19,7 @@ namespace PrivateOS
         char[] storage;
         public AllocationUnit()
         {
-            int size = Int32.Parse(ConfigurationManager.AppSettings["AllocationUnitSize"]);
+            ushort size = ushort.Parse(ConfigurationManager.AppSettings["AllocationUnitSize"]);
             storage = new char[size];
         }
     }
