@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PrivateOS.Business
+﻿namespace PrivateOS.Business
 {
     public class DeleteCommand : ICommand
     {
@@ -25,11 +19,12 @@ namespace PrivateOS.Business
 
             CheckIfFileExists(name, hwStorage);
 
-            var element = 
+            RoomTuple element =
                 hwStorage.ROOM.table
-                .Where(x => x.name.Equals(name))
-                .First()
-                .name = "?"; 
+                .Where(x => x.name.Equals(name) &&
+                            x.extension.Equals(extension))
+                .First();
+            element.name = "?"; 
         }
 
         private void CheckIfFileExists(string name, HWStorage storage)
@@ -51,7 +46,9 @@ namespace PrivateOS.Business
             name = nameAndExtension[0];
             extension = nameAndExtension[1];
 
-            if (name == null || extension == null || name == "" || extension == ""  || name == " " || extension == " ")
+            if (name == null || extension == null ||
+                name == "" || extension == ""  ||
+                name == " " || extension == " ")
                 throw new ArgumentNotFoundException("At least one argument of delete command was not found.");
         }
         public void WarningMaxNoOfArgs(int maxNoOfArgs)

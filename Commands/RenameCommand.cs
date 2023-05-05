@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PrivateOS.Business
+﻿namespace PrivateOS.Business
 {
     public class RenameCommand : ICommand
     {
@@ -25,15 +19,22 @@ namespace PrivateOS.Business
             string newExtension;
             ParseArguments(out oldName, out oldExtension, out newName, out newExtension);
 
-            CheckIfFileExists(oldName, hwStorage);
+            CheckIfFileExists(oldName, oldExtension, hwStorage);
 
+            RoomTuple element =
+                hwStorage.ROOM.table
+                .Where(x => x.name.Equals(oldName) &&
+                            x.extension.Equals(oldExtension))
+                .First();
+            element.name = newName;
+            element.extension = newExtension;
         }
 
-        private void CheckIfFileExists(string name, HWStorage storage)
+        private void CheckIfFileExists(string name, string extension, HWStorage storage)
         {
             foreach (var tuple in storage.ROOM.table)
             {
-                if (tuple.name == name)
+                if (tuple.name == name && tuple.extension == extension)
                     return;
             }
             throw new FileDoesNotExistsException($"File {name} doesn't exists.");
@@ -54,12 +55,18 @@ namespace PrivateOS.Business
             newName = newNameAndExtension[0];
             newExtension = newNameAndExtension[1];
 
-            if (oldName == null || newName == null || oldName == "" || newName == ""  || oldName == " " || newName == " ")
+            if (oldName == null || newName == null ||
+                oldName == "" || newName == ""  ||
+                oldName == " " || newName == " " ||
+                oldExtension == null || newExtension == null || 
+                oldExtension == "" || newExtension == "" ||
+                oldExtension == " " || newExtension == " ")
                 throw new ArgumentNotFoundException("At least one argument of delete command was not found.");
         }
         public void WarningMaxNoOfArgs(int maxNoOfArgs)
         {
-            Prompter.NoImplementionForMoreThanNoOfArgs(maxNoOfArgs);
+            if (actualArguments.Count > maxNoOfArgs)
+                Prompter.NoImplementionForMoreThanNoOfArgs(maxNoOfArgs);
         }
     }
 }

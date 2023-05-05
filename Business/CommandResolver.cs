@@ -18,6 +18,8 @@
                     return new ShutDownCommand(attributes);
                 case "delete":
                     return new DeleteCommand(attributes);
+                case "rename":
+                    return new RenameCommand(attributes);
 
                 default:
                     throw new CommandNotFoundException();
