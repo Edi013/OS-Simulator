@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace PrivateOS
 {
-    public  class CommandNotFound : Exception
+    public  class ArgumentNotFoundException : Exception
     {
-        public CommandNotFound(string message = "Command not found.")
+        public ArgumentNotFoundException(string message = "Argument not found.")
             : base(message)
         {
         }

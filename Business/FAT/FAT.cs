@@ -31,9 +31,15 @@ namespace PrivateOS.Business
         public static ushort BadCluster = 1;
         public static ushort ReservedCluster = 2;
         public static ushort UnusedCluster = 3;
+        public static ushort InitState = 4;
+
+
+        public ushort allocationUnitSize;
 
         public FAT()
         {
+            allocationUnitSize = ushort.Parse(ConfigurationManager.AppSettings["AllocationUnitSize"]);
+
             ushort noOfClusters = ushort.Parse(ConfigurationManager.AppSettings["NumberOfClusters"]);
             table = new ushort[noOfClusters];
 
@@ -47,6 +53,64 @@ namespace PrivateOS.Business
             }
         }
 
+        public bool CheckFreeAllocationChain(ushort fileSize)
+        {
+            ushort noOfClustersNeeded = CalculateNumberOfClustersNeeded(fileSize);
+            ushort numberOfClustersFound = 0;
+
+            for (ushort j = 0; j < table.Length; j++)
+            {
+                if (table[j] == 3)
+                {
+                    if (numberOfClustersFound == noOfClustersNeeded)
+                        return true;
+                    numberOfClustersFound++;
+                }
+            }
+            return false;
+            
+        }
+        public List<ushort> AllocateChainForFile(ushort fileSize)
+        {
+            ushort noOfClustersNeeded = CalculateNumberOfClustersNeeded(fileSize);
+            ushort numberOfClustersFound = 0;
+
+            //used just for initialization as a boolean type that works as an ok)
+            ushort lastClusterIndex = InitState;
+            List<ushort> allocationUnits = new List<ushort>();
+            for (ushort currentIndex = 0; currentIndex < table.Length; currentIndex++)
+            {
+                if (table[currentIndex] == 3)
+                {
+                    allocationUnits.Add(currentIndex);
+
+                    //doar daca a fost gasita prima unitate libera
+                    //din cea gasita precedent aratam spre indexul urmatoarei
+                    if (lastClusterIndex != InitState)
+                        table[lastClusterIndex] = currentIndex;
+                        
+
+                    lastClusterIndex = currentIndex;
+                    numberOfClustersFound++;
+
+                    if (numberOfClustersFound == noOfClustersNeeded)
+                        break;
+                }
+            }
+            table[lastClusterIndex] = EndOfChain;
+
+            return allocationUnits;
+        }
+        private ushort CalculateNumberOfClustersNeeded(ushort fileSize)
+        {
+            ushort noOfClustersNeeded = 0;
+            while (fileSize > 0)
+            {
+                noOfClustersNeeded++;
+                fileSize -= allocationUnitSize;
+            }
+            return noOfClustersNeeded;
+        }
         public void UpdatePosition(ushort index, ushort value)
         {
             table[index] = value;

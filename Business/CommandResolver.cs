@@ -8,7 +8,7 @@ namespace PrivateOS.Business
 {
     public class CommandResolver
     {
-        public static Type ResolveCommand(string commandName, List<string> attributes)
+        public static ICommand ResolveCommand(string commandName, List<string> attributes)
         {
             switch (commandName)
             {
@@ -19,7 +19,7 @@ namespace PrivateOS.Business
                     return new CreateCommand(attributes);
 
                 default:
-                    throw new CommandNotFound();
+                    throw new CommandNotFoundException();
             }
         }
     }

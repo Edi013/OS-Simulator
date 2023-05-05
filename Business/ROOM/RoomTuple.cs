@@ -13,7 +13,7 @@
         public string extension;
         public ushort size;
         public ushort firstAllocationUnit;
-        public bool attribute;
+        public bool flag;
 
         public RoomTuple(string name, string extension, ushort size, ushort firstAllocationUnit)
         {
@@ -21,7 +21,7 @@
             this.extension = extension;
             this.size = size;
             this.firstAllocationUnit = firstAllocationUnit;
-            attribute = false;
+            flag = false;
         }
         public RoomTuple(string name, string extension, ushort size, ushort firstAllocationUnit, bool attribute)
         {
@@ -29,12 +29,22 @@
             this.extension = extension;
             this.size = size;
             this.firstAllocationUnit = firstAllocationUnit;
-            this.attribute = attribute;
+            this.flag = attribute;
         }
 
         public override string ToString()
         {
             return $"Name: {name} | Extension: {extension}| Size: {size} | FAU:{firstAllocationUnit}";
+        }
+        public string DisplayNameDetails()
+        {
+            return name;
+        }
+        public string DisplayAllDetails()
+        {
+            if (flag)
+                return $"{ToString()} | Flag:{flag}";
+            return ToString();
         }
     }
 }

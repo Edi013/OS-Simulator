@@ -4,59 +4,62 @@ using System.Linq;
 using System.Text;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Configuration;
+using PrivateOS.Business;
 
 namespace PrivateOS.DataAccess
 {
     public class HWStorageRepository : IHWStorageRepository
     {
-        private string filePath;
+        private string FilePath { get; set; }
         
         public HWStorageRepository()
         {
-            filePath = ConfigurationManager.AppSettings["dbFilePath"];
+            FilePath = ConfigurationManager.AppSettings["dbFilePath"];
+            if (FilePath == null || FilePath == "")
+                throw new Exception("Repository error. Path to db-file is null or empty.");
         }
 
-        public HWStorage ReadStorage()
-        {
-            return Deserialize();
-        }
-        public void WriteStorage(HWStorage storage)
+        public void SaveStorage(HWStorage storage)
         {
             Serialize(storage);
+        }
+        public HWStorage GetStorage()
+        {
+            return Deserialize();
         }
 
         private HWStorage Deserialize()
         {
-            if (File.Exists(filePath))
+            try
             {
-                using (FileStream fs = new FileStream(filePath, FileMode.Open))
+                if (File.Exists(FilePath))
                 {
-                    if(fs.Length == 0)
-                        return new HWStorage();
+                    using (FileStream fs = new FileStream(FilePath, FileMode.Open))
+                    {
+                        if (fs.Length == 0)
+                            return new HWStorage();
 
+                        BinaryFormatter formatter = new BinaryFormatter();
+                        HWStorage result;
+                        
+                        return (HWStorage)formatter.Deserialize(fs);
+                    };
+                }
+                using (FileStream fs = new FileStream(FilePath, FileMode.Create))
+                {
                     BinaryFormatter formatter = new BinaryFormatter();
-                    HWStorage result;
-                    try
-                    {
-                        result = (HWStorage)formatter.Deserialize(fs);
-                    }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
-
-                    return result;
+                    return new HWStorage();
                 };
-            }
-            using (FileStream fs = new FileStream(filePath, FileMode.Create))
+            }catch(Exception e)
             {
-                BinaryFormatter formatter = new BinaryFormatter();
-                return new HWStorage();
-            };
+                Console.WriteLine(e.Message);
+                throw;
+            }
+            
         }
         private void Serialize(HWStorage storage)
         {
-            using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate))
+            using (FileStream fs = new FileStream(FilePath, FileMode.Create))
             {
                 BinaryFormatter formatter = new BinaryFormatter();
                 try
@@ -70,7 +73,6 @@ namespace PrivateOS.DataAccess
 
                 return;
             };
-            
         }
     }
 }

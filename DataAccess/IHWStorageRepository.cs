@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PrivateOS.Business;
 
 namespace PrivateOS.DataAccess
 {
     public interface IHWStorageRepository
     {
-        public void WriteStorage(HWStorage storage);
-        public HWStorage ReadStorage();
+        public void SaveStorage(HWStorage storage);
+        public HWStorage GetStorage();
 
+/*        public void SaveFAT(FAT fat);
+        public void SaveROOM(ROOM room);*/
     }
 }

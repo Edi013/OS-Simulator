@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using PrivateOS.DataAccess;
+using System.Configuration;
 
 namespace PrivateOS.Business
 {
@@ -13,14 +14,33 @@ namespace PrivateOS.Business
         {
             this.FAT = new FAT();
             this.ROOM = new ROOM();
-            int usableClusters =
+
+            int usableClusters = 
                 ushort.Parse(ConfigurationManager.AppSettings["NumberOfClusters"]) -
                 ushort.Parse(ConfigurationManager.AppSettings["FATSize"]) -
                 ushort.Parse(ConfigurationManager.AppSettings["ROOMSize"]);
-
             this.Storage = new AllocationUnit[usableClusters];
         }
-        
-        // read FAT, ROOM and Storage from DB, eventually
+        public AllocationUnit GetStorageCluster(ushort indexFromFat)
+        {
+            var indexFromStorage = FromFatIndexToStorageIndex(indexFromFat);
+            return GetCluster(indexFromStorage);
+        }
+        private AllocationUnit GetCluster(int indexFromStorage)
+        {
+            return Storage[indexFromStorage];
+        }
+        private int FromFatIndexToStorageIndex(ushort indexFromFat)
+        {
+            // 4096 clusters
+            // 0   ... 511  = FAT     (512)
+            // 512 ... 576  = ROOM    (64)
+            // 576 ... 4095 = STORAGE (3520)
+            // 0 ... 3519 - AllocationUnit[] Storage
+
+            return indexFromFat 
+                - ushort.Parse(ConfigurationManager.AppSettings["FATSize"])
+                - ushort.Parse(ConfigurationManager.AppSettings["ROOMSize"]);
+        }
     }
 }

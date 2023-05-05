@@ -16,11 +16,11 @@ namespace PrivateOS
         The choices happen when 'the storage' is formated.
          */
 
-        char[] storage;
+        public char[] Content { get; set; }
         public AllocationUnit()
         {
             ushort size = ushort.Parse(ConfigurationManager.AppSettings["AllocationUnitSize"]);
-            storage = new char[size];
+            Content = new char[size];
         }
     }
 }

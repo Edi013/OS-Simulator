@@ -11,7 +11,8 @@ namespace PrivateOS.Business
         public string Name { get; }
         public string Description { get; }
         public List<CommandArgument> Arguments { get; }
+        public List<string> actualArguments { get; }
 
-        public void Execute(OS os);
+        public void Execute(HWStorage hwStorage);
     }
 }
