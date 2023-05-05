@@ -116,3 +116,4 @@ namespace PrivateOS.Business
 }
 
 //create max files
+//implement presentation in help for delete and rename
