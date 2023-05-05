@@ -80,9 +80,9 @@ namespace PrivateOS.Business
             
         }
 
-
         private void ParseArguments(HWStorage storage, out string fileName, out string fileExtension, out ushort sizeInBytes, out string contentType)
         {
+            //Parsing the arguments accordingly to restrictions from room's table entries 
             try
             {
 
@@ -97,6 +97,7 @@ namespace PrivateOS.Business
                 fileName = fileNameAndExtension[0];
                 int maximumAllowedNoOfCharsAsNameInRoom = (int)Math.Floor
                     (double.Parse(ConfigurationManager.AppSettings["RoomEntrySizeOfName"]) / double.Parse(ConfigurationManager.AppSettings["CharSizeInBytes"]));
+                
                 if (fileName.Length > maximumAllowedNoOfCharsAsNameInRoom)
                     throw new NameIsTooLongException($"File name is too long.\nMaximum number of chars allowed is {maximumAllowedNoOfCharsAsNameInRoom}");
                 CheckForTakenFileName(storage, fileName);
@@ -120,7 +121,6 @@ namespace PrivateOS.Business
                 throw;
             }
         }
-
         private void CheckForTakenFileName(HWStorage storage, string fileName)
         {
             foreach (var entry in storage.ROOM.table)
@@ -128,6 +128,22 @@ namespace PrivateOS.Business
                 if(entry != null && fileName.Equals(entry.name))
                     throw new FileNameTakenException();
             }
+        }
+        private void ValidateArguments(string fileName, string fileExtension, ushort sizeInBytes, string contentType)
+        {
+            if (fileName == null || fileExtension == null || sizeInBytes == null || contentType == null)
+                throw new ArgumentNotFoundException();
+
+            if (fileName.Length == 0 || fileExtension.Length == 0  || sizeInBytes == 0 || contentType.Length == 0)
+                throw new ArgumentNullException("Missing mandatory argument - create command");
+
+            //if (!contentType.Equals("-num") && !contentType.Equals("-alfa") && !contentType.Equals("-hex"))
+            foreach (var item in Arguments)
+            {
+                if (item.Name.Equals(contentType))
+                    return;
+            }   
+            throw new ArgumentNotValidException("Content type asked in create command is not valid!");
         }
 
         private void WriteFile(HWStorage storage, List<ushort> allocationChainFromFat, int fileSizeByCharSize, int clusterCharCapacity)
@@ -160,21 +176,5 @@ namespace PrivateOS.Business
             }
         }
 
-        private void ValidateArguments(string fileName, string fileExtension, ushort sizeInBytes, string contentType)
-        {
-            if (fileName == null || fileExtension == null || sizeInBytes == null || contentType == null)
-                throw new ArgumentNotFoundException();
-            if (fileName.Length == 0 || fileExtension.Length == 0  || sizeInBytes == 0 || contentType.Length == 0)
-                throw new ArgumentNullException("Missing mandatory argument - create command");
-
-            bool validContentType = false;
-            foreach (var argument in actualArguments)
-            {
-                if(argument.Equals(contentType))
-                    validContentType = true;
-            }
-            if (!validContentType)
-                throw new ArgumentNotValidException();
-        }
     }
 }

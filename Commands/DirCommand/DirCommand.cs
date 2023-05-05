@@ -7,7 +7,6 @@ namespace PrivateOS.Business
         //Primele 3 proprietati sunt pentru Presentation Layer
         public string Name => "dir";
         public string Description => "Display every file in current directory";
-
         public List<CommandArgument> Arguments =>
             new List<CommandArgument>()
             {
@@ -18,8 +17,9 @@ namespace PrivateOS.Business
                 },
             };
 
-        //Ultima + Metodele - Business layer
+        //A 4-a proprietate + metodele - Business layer
         public List<string> actualArguments { get; }
+
 
         public DirCommand(List<string> arguments)
         {
@@ -29,18 +29,16 @@ namespace PrivateOS.Business
 
         public void Execute(HWStorage hwStorage)
         {
-
             Console.WriteLine("Files:");
+            if(actualArguments.Count > 1)
+                Console.WriteLine("No implementation exists for more than 1 argument!\n");
 
-            // comanda "dir"
+            //In functie de ce argument exista, executam corespunzator comanda
             if (!actualArguments.Any())
             {
+                // Fara argumente, executa comanda "dir"
                 ExecuteWithNoArguments(hwStorage);
                 return;
-            }
-            if(actualArguments.Count > 1)
-            {
-                Console.WriteLine("No implementation exists for more than 1 argument!\n");
             }
             switch (actualArguments.First().ToLower())
             {
@@ -57,6 +55,12 @@ namespace PrivateOS.Business
                     throw new ArgumentNotFoundException();
             }
         }
+
+
+        /*
+         Metodele pentru afisare sunt similare.
+         Difera doar detaliile afisate
+        */
         private void ExecuteWithNoArguments(HWStorage  hwStorage)
         {
             int contor = 0;
