@@ -1,4 +1,6 @@
-﻿namespace PrivateOS.Business
+﻿using System.Configuration;
+
+namespace PrivateOS.Business
 {
     public class CreateCommand : ICommand
     {
@@ -27,31 +29,50 @@
             };
 
         public List<string> actualArguments { get; }
+        private Iterator charGenerator { get; set; }
 
         public CreateCommand(List<string> actualArguments)
         {
             this.actualArguments = actualArguments;
         }
 
-        //create nume.txt 5 -NUM
+        public void ParseArguments(out string fileName, out string fileExtension, out ushort sizeInBytes, out string contentType)
+        {
+            try
+            {
 
+                if (actualArguments.Count < 3)
+                    throw new CreateCommandParametersMissingException();
+                List<string> fileNameAndExtension = actualArguments[0].Split(".").ToList();
+                fileName = fileNameAndExtension[0];
+                fileExtension = fileNameAndExtension[1];
+
+                sizeInBytes = ushort.Parse(actualArguments[1]);
+                contentType = actualArguments[2];
+
+                ValidateArguments(fileName, fileExtension, sizeInBytes, contentType);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
         public void Execute(HWStorage storage)
         {
             try
             {
-                List<string> fileNameAndExtension = actualArguments[0].Split(".").ToList();
-                string fileName = fileNameAndExtension[0];
-                string fileExtension = fileNameAndExtension[1];
-                ushort sizeInBytes = ushort.Parse(actualArguments[1]);
-                string contentType = actualArguments[2];
+                string fileName, fileExtension, contentType;
+                ushort sizeInBytes;
 
-                ValidateArguments(fileName, fileExtension, sizeInBytes, contentType);
+                ParseArguments(out fileName, out fileExtension, out sizeInBytes, out contentType);
+
                 if (!storage.ROOM.ExistsFreeEntry())
                     throw new RoomIsFullException();
                 if (!storage.FAT.CheckFreeAllocationChain(sizeInBytes))
                     throw new FatIsFullException();
 
                 //alocate the allocation chain for a file in fat
+                //and save the cluseters to write the file 
                 List<ushort> allocationChainFromFat = 
                     storage.FAT.AllocateChainForFile(sizeInBytes);
 
@@ -63,33 +84,52 @@
                     new RoomTuple(fileName, fileExtension, sizeInBytes, allocationChainFromFat[0]);
                 storage.ROOM.AddTupleInRoom(indexOfFreeEntryInRoom, newRoomTuple);
 
-                //foreach cluster - a method that finds next cluster - FAT method
-                // no needed anymore. we have the whole chain from allocation
-                foreach (var indexFromFat in allocationChainFromFat)
-                {
-                    var allocationUnitFromStorage = storage.GetStorageCluster(indexFromFat);
-                    WriteFile(AllocationUnit cluster, string contentType);
+                //calculate how many chars will be written in given size
+                int charSize = int.Parse(ConfigurationManager.AppSettings["CharSizeInBytes"]);
+                int fileSizeByCharSize = sizeInBytes / charSize;
 
-                }
-                //write whatever the argument is. -  switch for args
-                // until the size is reached. - flag / state var
-                // you need to remember what was the last letter written in last cluster - enumerator
-            }
-            catch(Exception e)
+                int clusterCharCapacity = 
+                    int.Parse(ConfigurationManager.AppSettings["AllocationUnitSize"]) / charSize;
+
+                //start writing
+                charGenerator = new Iterator(contentType);
+                WriteFile(storage, allocationChainFromFat, fileSizeByCharSize, clusterCharCapacity);
+            }catch(Exception e)
             {
                 throw;
             }
-
-            //verificam daca esti free entry in room/fat
-            //alocam spatiu pe fat
-            //alocam spatiu in room
-
-            //scriem pe disk - switch pt argumente:
-            // - trebuie
- 
+            
         }
 
-        private void WriteFile()
+        private void WriteFile(HWStorage storage, List<ushort> allocationChainFromFat, int fileSizeByCharSize, int clusterCharCapacity)
+        {
+            //Incepem scriere pe disc.
+            //Pentru fiecare cluster - daca nu e ultimul, scriem capacitatea maxima admisa.
+            //                       - daca  e ultimul, scriem diferenta mai jos calculata.
+            for (int clusterNo = 0; clusterNo < allocationChainFromFat.Count; clusterNo++)
+            {
+                var allocationUnitFromStorage = 
+                    storage.GetStorageCluster(
+                        allocationChainFromFat[clusterNo]);
+
+                if(clusterNo == allocationChainFromFat.Count - 1)
+                {
+                    int remainingNoOfChars = fileSizeByCharSize - (clusterNo * clusterCharCapacity);
+                    WriteCluster(allocationUnitFromStorage, remainingNoOfChars);
+                    break;
+                }
+                WriteCluster(allocationUnitFromStorage, clusterCharCapacity);
+            }
+        }
+        private void WriteCluster(AllocationUnit cluster, int noOfCharsToWrite)
+        {
+            //Scrierea efectiva pe 'disk' 
+            for (int i = 0; i < noOfCharsToWrite; i++)
+            {
+                cluster.Content[i] = charGenerator.Next();
+            }
+        }
+
         private void ValidateArguments(string fileName, string fileExtension, ushort sizeInBytes, string contentType)
         {
             if (fileName == null || fileExtension == null || sizeInBytes == null || contentType == null)

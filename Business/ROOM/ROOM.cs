@@ -17,14 +17,14 @@ namespace PrivateOS.Business
 
         public ROOM()
         {
-            ushort size = ushort.Parse(System.Configuration.ConfigurationManager.AppSettings["ROOMSize"]);
+            int size = int.Parse(System.Configuration.ConfigurationManager.AppSettings["ROOMSize"]);
             table = new
                 RoomTuple[size];
         }
 
         public bool ExistsFreeEntry()
         {
-            for (short i = 0; i < table.Length; i++)
+            for (int i = 0; i < table.Length; i++)
             {
                 if (table[i] == null || table[i].name == "?")
                 {
@@ -33,16 +33,16 @@ namespace PrivateOS.Business
             }
             return false;
         }
-        public ushort GetFirstFreeEntry()
+        public int GetFirstFreeEntry()
         {
-            for (ushort i = 0; i < table.Length; i++)
+            for (int i = 0; i < table.Length; i++)
             {
                 if (table[i] == null || table[i].name == "?")
                     return i;
             }
             throw new Exception();
         }
-        public void AddTupleInRoom(ushort index, RoomTuple roomTuple)
+        public void AddTupleInRoom(int index, RoomTuple roomTuple)
         {
             table[index] = roomTuple;
         }

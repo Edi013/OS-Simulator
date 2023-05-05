@@ -49,6 +49,8 @@ namespace PrivateOS
                 catch (CancelCommandException e)
                 {
                     Console.WriteLine(e.Message);
+                    if (Prompter.WantsToExit())
+                        break;
                 }
                 catch (CommandNotFoundException e)
                 {
@@ -66,14 +68,19 @@ namespace PrivateOS
                 {
                     Console.WriteLine(e.Message);
                 }
+                catch(CreateCommandParametersMissingException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
                 catch (Exception e)
                 {
                     Console.WriteLine("Error happend, message: \n" + e.Message + "\n" + e.StackTrace);
                     throw;
                 }
-                
-                if (Prompter.WantsToExit())
-                   break;
+                finally
+                {
+                    Console.WriteLine();
+                }
             }
         }
         private static void ValidateCommand(string command)
@@ -89,15 +96,6 @@ namespace PrivateOS
 
             commandName = splittedCommand.First();
             arguments = splittedCommand.Skip(1).ToList();
-        }
-
-        public void UpdateFat(ushort index, ushort value)
-        {
-            Storage.FAT.UpdatePosition(index, value);
-        }
-        public void UpdateRoom()
-        {
-            //Storage.ROOM.Update(room);
         }
     }
 }

@@ -15,13 +15,13 @@ namespace PrivateOS.Business
             this.FAT = new FAT();
             this.ROOM = new ROOM();
 
-            int usableClusters = 
-                ushort.Parse(ConfigurationManager.AppSettings["NumberOfClusters"]) -
-                ushort.Parse(ConfigurationManager.AppSettings["FATSize"]) -
-                ushort.Parse(ConfigurationManager.AppSettings["ROOMSize"]);
+            int usableClusters =
+                int.Parse(ConfigurationManager.AppSettings["NumberOfClusters"]) -
+                int.Parse(ConfigurationManager.AppSettings["FATSize"]) -
+                int.Parse(ConfigurationManager.AppSettings["ROOMSize"]);
             this.Storage = new AllocationUnit[usableClusters];
         }
-        public AllocationUnit GetStorageCluster(ushort indexFromFat)
+        public AllocationUnit GetStorageCluster(int indexFromFat)
         {
             var indexFromStorage = FromFatIndexToStorageIndex(indexFromFat);
             return GetCluster(indexFromStorage);
@@ -30,7 +30,7 @@ namespace PrivateOS.Business
         {
             return Storage[indexFromStorage];
         }
-        private int FromFatIndexToStorageIndex(ushort indexFromFat)
+        private int FromFatIndexToStorageIndex(int indexFromFat)
         {
             // 4096 clusters
             // 0   ... 511  = FAT     (512)
@@ -39,8 +39,8 @@ namespace PrivateOS.Business
             // 0 ... 3519 - AllocationUnit[] Storage
 
             return indexFromFat 
-                - ushort.Parse(ConfigurationManager.AppSettings["FATSize"])
-                - ushort.Parse(ConfigurationManager.AppSettings["ROOMSize"]);
+                - int.Parse(ConfigurationManager.AppSettings["FATSize"])
+                - int.Parse(ConfigurationManager.AppSettings["ROOMSize"]);
         }
     }
 }

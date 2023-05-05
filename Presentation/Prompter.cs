@@ -15,8 +15,6 @@ namespace PrivateOS
         }
         private string GetCommandFromUser()
         {
-            Console.WriteLine("Input command's name :\n");
-            
             string userInput = Console.ReadLine().ToLower();
             if (String.IsNullOrWhiteSpace(userInput))
             {
@@ -37,9 +35,9 @@ namespace PrivateOS
         }
         public bool WantsToExit()
         {
-            Console.WriteLine("If needed, input 'Y' to shut down:");
+            Console.WriteLine("Input 'Y' to shut down:");
 
-            if(Console.ReadLine() == "Y")
+            if(Console.ReadLine().ToUpper() == "Y")
                 return true;
             return false;
         }

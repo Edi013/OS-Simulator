@@ -53,10 +53,10 @@ namespace PrivateOS.Business
             }
         }
 
-        public bool CheckFreeAllocationChain(ushort fileSize)
+        public bool CheckFreeAllocationChain(int fileSize)
         {
-            ushort noOfClustersNeeded = CalculateNumberOfClustersNeeded(fileSize);
-            ushort numberOfClustersFound = 0;
+            int noOfClustersNeeded = CalculateNumberOfClustersNeeded(fileSize);
+            int numberOfClustersFound = 0;
 
             for (ushort j = 0; j < table.Length; j++)
             {
@@ -70,10 +70,10 @@ namespace PrivateOS.Business
             return false;
             
         }
-        public List<ushort> AllocateChainForFile(ushort fileSize)
+        public List<ushort> AllocateChainForFile(int fileSize)
         {
-            ushort noOfClustersNeeded = CalculateNumberOfClustersNeeded(fileSize);
-            ushort numberOfClustersFound = 0;
+            int noOfClustersNeeded = CalculateNumberOfClustersNeeded(fileSize);
+            int numberOfClustersFound = 0;
 
             //used just for initialization as a boolean type that works as an ok)
             ushort lastClusterIndex = InitState;
@@ -101,19 +101,15 @@ namespace PrivateOS.Business
 
             return allocationUnits;
         }
-        private ushort CalculateNumberOfClustersNeeded(ushort fileSize)
+        private int CalculateNumberOfClustersNeeded(int fileSize)
         {
-            ushort noOfClustersNeeded = 0;
+            int noOfClustersNeeded = 0;
             while (fileSize > 0)
             {
                 noOfClustersNeeded++;
                 fileSize -= allocationUnitSize;
             }
             return noOfClustersNeeded;
-        }
-        public void UpdatePosition(ushort index, ushort value)
-        {
-            table[index] = value;
         }
     }
 }
