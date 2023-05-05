@@ -15,7 +15,7 @@ namespace PrivateOS
         }
         private string GetCommandFromUser()
         {
-            string userInput = Console.ReadLine().ToLower();
+            string userInput = Console.ReadLine();
             if (String.IsNullOrWhiteSpace(userInput))
             {
                 throw new CancelCommandException();

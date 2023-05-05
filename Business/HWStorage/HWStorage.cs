@@ -8,6 +8,7 @@ namespace PrivateOS.Business
     {
         public FAT FAT { get; set; }
         public ROOM ROOM { get; set; }
+        //56300 e numarul maxim de bytes pe care ne lasa sa il scriem in storage in loc de 56320
         public AllocationUnit[] Storage { get; set; }
 
         public HWStorage()
@@ -23,7 +24,7 @@ namespace PrivateOS.Business
         }
         public AllocationUnit GetStorageCluster(int indexFromFat)
         {
-            var indexFromStorage = FromFatIndexToStorageIndex(indexFromFat);
+            int indexFromStorage = FromFatIndexToStorageIndex(indexFromFat);
             return GetCluster(indexFromStorage);
         }
         private AllocationUnit GetCluster(int indexFromStorage)

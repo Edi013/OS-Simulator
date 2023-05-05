@@ -36,27 +36,6 @@ namespace PrivateOS.Business
             this.actualArguments = actualArguments;
         }
 
-        public void ParseArguments(out string fileName, out string fileExtension, out ushort sizeInBytes, out string contentType)
-        {
-            try
-            {
-
-                if (actualArguments.Count < 3)
-                    throw new CreateCommandParametersMissingException();
-                List<string> fileNameAndExtension = actualArguments[0].Split(".").ToList();
-                fileName = fileNameAndExtension[0];
-                fileExtension = fileNameAndExtension[1];
-
-                sizeInBytes = ushort.Parse(actualArguments[1]);
-                contentType = actualArguments[2];
-
-                ValidateArguments(fileName, fileExtension, sizeInBytes, contentType);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
         public void Execute(HWStorage storage)
         {
             try
@@ -64,7 +43,7 @@ namespace PrivateOS.Business
                 string fileName, fileExtension, contentType;
                 ushort sizeInBytes;
 
-                ParseArguments(out fileName, out fileExtension, out sizeInBytes, out contentType);
+                ParseArguments(storage, out fileName, out fileExtension, out sizeInBytes, out contentType);
 
                 if (!storage.ROOM.ExistsFreeEntry())
                     throw new RoomIsFullException();
@@ -77,8 +56,8 @@ namespace PrivateOS.Business
                     storage.FAT.AllocateChainForFile(sizeInBytes);
 
                 //get the first free entry in room 
-                ushort indexOfFreeEntryInRoom = 
-                    storage.ROOM.GetFirstFreeEntry();
+                ushort indexOfFreeEntryInRoom =
+                    (ushort)storage.ROOM.GetFirstFreeEntry();
                 //build and add the tuple in room
                 RoomTuple newRoomTuple =  
                     new RoomTuple(fileName, fileExtension, sizeInBytes, allocationChainFromFat[0]);
@@ -99,6 +78,56 @@ namespace PrivateOS.Business
                 throw;
             }
             
+        }
+
+
+        private void ParseArguments(HWStorage storage, out string fileName, out string fileExtension, out ushort sizeInBytes, out string contentType)
+        {
+            try
+            {
+
+                if (actualArguments.Count < 3)
+                    throw new CreateCommandParametersMissingException();
+
+                List<string> fileNameAndExtension = actualArguments[0].Split(".").ToList();
+                if(fileNameAndExtension.Count < 2)
+                    throw new CreateCommandParametersMissingException();
+
+
+                fileName = fileNameAndExtension[0];
+                int maximumAllowedNoOfCharsAsNameInRoom = (int)Math.Floor
+                    (double.Parse(ConfigurationManager.AppSettings["RoomEntrySizeOfName"]) / double.Parse(ConfigurationManager.AppSettings["CharSizeInBytes"]));
+                if (fileName.Length > maximumAllowedNoOfCharsAsNameInRoom)
+                    throw new NameIsTooLongException($"File name is too long.\nMaximum number of chars allowed is {maximumAllowedNoOfCharsAsNameInRoom}");
+                CheckForTakenFileName(storage, fileName);
+
+                fileExtension = fileNameAndExtension[1];
+                int maximumAllowedNoOfCharsAsExtensionInRoom = (int)Math.Floor
+                    (double.Parse(ConfigurationManager.AppSettings["RoomEntrySizeOfName"]) / double.Parse(ConfigurationManager.AppSettings["CharSizeInBytes"]));
+                if (fileName.Length > maximumAllowedNoOfCharsAsExtensionInRoom)
+                    throw new NameIsTooLongException($"File extension is too long.\nMaximum number of chars allowed is {maximumAllowedNoOfCharsAsNameInRoom}");
+
+                sizeInBytes = ushort.Parse(actualArguments[1]);
+                contentType = actualArguments[2];
+
+                ValidateArguments(fileName, fileExtension, sizeInBytes, contentType);
+
+                fileExtension = fileExtension.ToLower();
+                contentType = contentType.ToLower();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        private void CheckForTakenFileName(HWStorage storage, string fileName)
+        {
+            foreach (var entry in storage.ROOM.table)
+            {
+                if(entry != null && fileName.Equals(entry.name))
+                    throw new FileNameTakenException();
+            }
         }
 
         private void WriteFile(HWStorage storage, List<ushort> allocationChainFromFat, int fileSizeByCharSize, int clusterCharCapacity)
@@ -123,6 +152,7 @@ namespace PrivateOS.Business
         }
         private void WriteCluster(AllocationUnit cluster, int noOfCharsToWrite)
         {
+            cluster = new AllocationUnit();
             //Scrierea efectiva pe 'disk' 
             for (int i = 0; i < noOfCharsToWrite; i++)
             {

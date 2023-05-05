@@ -43,10 +43,11 @@ namespace PrivateOS.Business
             ushort noOfClusters = ushort.Parse(ConfigurationManager.AppSettings["NumberOfClusters"]);
             table = new ushort[noOfClusters];
 
-            ushort fatSize = ushort.Parse(ConfigurationManager.AppSettings["FATSize"]);
+            int fatSize = int.Parse(ConfigurationManager.AppSettings["FATSize"]);
+            int roomSize = int.Parse(ConfigurationManager.AppSettings["ROOMSize"]);
             for (ushort i = 0; i < noOfClusters; i++)
             {
-                if (i < fatSize)
+                if (i < fatSize + roomSize)
                     table[i] = ReservedCluster;
                 else
                     table[i] = UnusedCluster;
@@ -58,13 +59,13 @@ namespace PrivateOS.Business
             int noOfClustersNeeded = CalculateNumberOfClustersNeeded(fileSize);
             int numberOfClustersFound = 0;
 
-            for (ushort j = 0; j < table.Length; j++)
+            for (int j = 0; j < table.Length; j++)
             {
-                if (table[j] == 3)
+                if (table[j] == UnusedCluster)
                 {
+                    numberOfClustersFound++;
                     if (numberOfClustersFound == noOfClustersNeeded)
                         return true;
-                    numberOfClustersFound++;
                 }
             }
             return false;

@@ -8,8 +8,6 @@ namespace PrivateOS.Business
         public string Name => "dir";
         public string Description => "Display every file in current directory";
 
-        // proprietatea argumente apare de 2 intrucat 'Arguments' se foloseste pentru prezentare
-        // iar actualArguments pentru logica aplicatiei
         public List<CommandArgument> Arguments =>
             new List<CommandArgument>()
             {
@@ -40,8 +38,11 @@ namespace PrivateOS.Business
                 ExecuteWithNoArguments(hwStorage);
                 return;
             }
-
-            switch (actualArguments.First())
+            if(actualArguments.Count > 1)
+            {
+                Console.WriteLine("No implementation exists for more than 1 argument!\n");
+            }
+            switch (actualArguments.First().ToLower())
             {
                 // comanda "dir "
                 case "":
@@ -64,7 +65,7 @@ namespace PrivateOS.Business
                 if (entry != null)
                 {
                     contor++;
-                    Console.WriteLine(entry.DisplayNameDetails() );
+                    Console.WriteLine(entry.DisplayMinimalDetails() );
                 }
             }
 

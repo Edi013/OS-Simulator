@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace PrivateOS
 {
+    [Serializable()]
     public class AllocationUnit
     {
         /*

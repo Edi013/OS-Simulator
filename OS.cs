@@ -2,6 +2,7 @@
 using PrivateOS.DataAccess;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,20 +32,23 @@ namespace PrivateOS
                 try // Sistem centralizat pentru error handling.
                 {
                     //Preluam comanda de la user
-                    string command = Prompter.AskForCommand();
-                    ValidateCommand(command);
+                    string userInput = Prompter.AskForCommand();
+                    ValidateCommand(userInput);
 
                     //Impartim comanda in doua: nume comanda, argumente
                     string commandName;
                     List<string> arguments;
-                    SplitCommand(command, out commandName, out arguments);
+                    SplitCommand(userInput, out commandName, out arguments);
 
                     //Cerem 'gestionarului de dependinte' sa ne dea comanda dorita
                     var commandInstance = CommandResolver.ResolveCommand(commandName, arguments);
-                    ICommand comand = commandInstance;
+                    ICommand command = commandInstance;
                     commandInstance.Execute(Storage);
 
-                    Repository.SaveStorage(Storage);
+                    if(command is CreateCommand)
+                    {
+                        Repository.SaveStorage(Storage);
+                    }
                 }
                 catch (CancelCommandException e)
                 {
@@ -64,7 +68,7 @@ namespace PrivateOS
                 {
                     Console.WriteLine(e.Message);
                 }
-                catch (ArgumentNotValidException e)
+                catch (ArgumentNotValidException e) when (e is ArgumentNotValidException)
                 {
                     Console.WriteLine(e.Message);
                 }
@@ -72,10 +76,25 @@ namespace PrivateOS
                 {
                     Console.WriteLine(e.Message);
                 }
+                catch (FatIsFullException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                catch (RoomIsFullException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                catch (FileNameTakenException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                catch (NameIsTooLongException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
                 catch (Exception e)
                 {
                     Console.WriteLine("Error happend, message: \n" + e.Message + "\n" + e.StackTrace);
-                    throw;
                 }
                 finally
                 {
@@ -94,7 +113,7 @@ namespace PrivateOS
         {
             string[] splittedCommand = command.ToLower().Split(" ");
 
-            commandName = splittedCommand.First();
+            commandName = splittedCommand.First().ToLower();
             arguments = splittedCommand.Skip(1).ToList();
         }
     }

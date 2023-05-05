@@ -37,7 +37,7 @@ namespace PrivateOS.Business
         }
         public char Next()
         {
-            if (position == values.Count + 1)
+            if (position == values.Count - 1)
                 Reset();
             return values[position++];
         }

@@ -1,5 +1,6 @@
 ﻿namespace PrivateOS.Business
 {
+    [Serializable()]
     public class RoomTuple
     {
         /* 
@@ -34,11 +35,11 @@
 
         public override string ToString()
         {
-            return $"Name: {name} | Extension: {extension}| Size: {size} | FAU:{firstAllocationUnit}";
+            return $"{name}.{extension} {size} bytes  FAU:{firstAllocationUnit}";
         }
-        public string DisplayNameDetails()
+        public string DisplayMinimalDetails()
         {
-            return name;
+            return $"{name}.{extension}";
         }
         public string DisplayAllDetails()
         {
