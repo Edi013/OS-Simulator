@@ -8,11 +8,8 @@ namespace PrivateOS.Business
 {
     public interface ICommand
     {
-        public string Name { get; }
-        public string Description { get; }
-        public List<CommandArgument> Arguments { get; }
         public List<string> actualArguments { get; }
-
+        public void WarningMaxNoOfArgs(int maxNoOfArgs);
         public void Execute(HWStorage hwStorage);
     }
 }

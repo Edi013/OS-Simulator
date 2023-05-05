@@ -1,11 +1,5 @@
 ﻿using PrivateOS.Business;
 using PrivateOS.DataAccess;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PrivateOS
 {
@@ -33,7 +27,6 @@ namespace PrivateOS
                 {
                     //Preluam comanda de la user
                     string userInput = Prompter.AskForCommand();
-                    ValidateCommand(userInput);
 
                     //Impartim comanda in doua: nume comanda, argumente
                     string commandName;
@@ -45,12 +38,14 @@ namespace PrivateOS
                     ICommand command = commandInstance;
                     commandInstance.Execute(Storage);
 
-                    if(command is CreateCommand)
+                    if(command is CreateCommand || 
+                       command is DeleteCommand ||
+                       command is RenameCommand)
                     {
                         Repository.SaveStorage(Storage);
                     }
                 }
-                catch (CancelCommandException e)
+                catch (ShutDownException e)
                 {
                     Console.WriteLine(e.Message);
                     if (Prompter.WantsToExit())
@@ -59,22 +54,27 @@ namespace PrivateOS
                 catch (CommandNotFoundException e)
                 {
                     Console.WriteLine(e.Message);
+                    Console.WriteLine("Try 'help' command.");
                 }
                 catch (ArgumentNotFoundException e)
                 {
                     Console.WriteLine(e.Message);
+                    Console.WriteLine("Try 'help' command.");
                 }
                 catch (ArgumentNullException e)
                 {
                     Console.WriteLine(e.Message);
+                    Console.WriteLine("Try 'help' command.");
                 }
                 catch (ArgumentNotValidException e) when (e is ArgumentNotValidException)
                 {
                     Console.WriteLine(e.Message);
+                    Console.WriteLine("Try 'help' command.");
                 }
-                catch(CreateCommandParametersMissingException e)
+                catch (CreateCommandParametersMissingException e)
                 {
                     Console.WriteLine(e.Message);
+                    Console.WriteLine("Try 'help' command.");
                 }
                 catch (FatIsFullException e)
                 {
@@ -92,22 +92,20 @@ namespace PrivateOS
                 {
                     Console.WriteLine(e.Message);
                 }
+                catch(FileDoesNotExistsException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
                 catch (Exception e)
                 {
                     Console.WriteLine("Error happend, message: \n" + e.Message + "\n" + e.StackTrace);
+                    Console.WriteLine("Try 'help' command.");
                 }
                 finally
                 {
                     Console.WriteLine();
                 }
             }
-        }
-        private static void ValidateCommand(string command)
-        {
-            if (command == null || command == "")
-                throw new CommandNotFoundException();
-            if (command == " ")
-                throw new CancelCommandException();
         }
         private static void SplitCommand(string command, out string commandName, out List<string> arguments)
         {

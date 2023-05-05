@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PrivateOS.Business
+﻿namespace PrivateOS.Business
 {
     public class CommandResolver
     {
@@ -17,6 +11,13 @@ namespace PrivateOS.Business
 
                 case "create":
                     return new CreateCommand(attributes);
+
+                case "help":
+                    return new HelpCommand(attributes);
+                case "\" \"":
+                    return new ShutDownCommand(attributes);
+                case "delete":
+                    return new DeleteCommand(attributes);
 
                 default:
                     throw new CommandNotFoundException();

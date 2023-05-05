@@ -18,7 +18,7 @@ namespace PrivateOS
             string userInput = Console.ReadLine();
             if (String.IsNullOrWhiteSpace(userInput))
             {
-                throw new CancelCommandException();
+                throw new ShutDownException();
             }
 
             return userInput;
@@ -41,6 +41,9 @@ namespace PrivateOS
                 return true;
             return false;
         }
-        
+        public static void NoImplementionForMoreThanNoOfArgs(int noOfArgs)
+        {
+            Console.WriteLine($"No implementation exists for more than {noOfArgs} argument!\n");
+        }
     }
 }

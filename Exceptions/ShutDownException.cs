@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace PrivateOS
 {
-    public  class CancelCommandException : Exception
+    public  class ShutDownException : Exception
     {
-        public CancelCommandException(string message = "Command canceld.")
+        public ShutDownException(string message = "Shut Down Command.")
             : base(message)
         {
         }

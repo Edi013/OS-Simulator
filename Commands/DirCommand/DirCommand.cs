@@ -4,34 +4,20 @@ namespace PrivateOS.Business
 {
     public class DirCommand : ICommand
     {
-        //Primele 3 proprietati sunt pentru Presentation Layer
-        public string Name => "dir";
-        public string Description => "Display every file in current directory";
-        public List<CommandArgument> Arguments =>
-            new List<CommandArgument>()
-            {
-                new CommandArgument()
-                {
-                    Name = "-a",
-                    Description = "Display more information for each file",
-                },
-            };
-
-        //A 4-a proprietate + metodele - Business layer
         public List<string> actualArguments { get; }
 
+        List<string> ICommand.actualArguments => throw new NotImplementedException();
 
         public DirCommand(List<string> arguments)
         {
             actualArguments = arguments;
         }
 
-
         public void Execute(HWStorage hwStorage)
         {
             Console.WriteLine("Files:");
-            if(actualArguments.Count > 1)
-                Console.WriteLine("No implementation exists for more than 1 argument!\n");
+
+            WarningMaxNoOfArgs(1);
 
             //In functie de ce argument exista, executam corespunzator comanda
             if (!actualArguments.Any())
@@ -56,6 +42,11 @@ namespace PrivateOS.Business
             }
         }
 
+        public void WarningMaxNoOfArgs(int maxNoOfArgs)
+        {
+            if (actualArguments.Count > maxNoOfArgs)
+                Prompter.NoImplementionForMoreThanNoOfArgs(maxNoOfArgs);
+        }
 
         /*
          Metodele pentru afisare sunt similare.
@@ -63,17 +54,17 @@ namespace PrivateOS.Business
         */
         private void ExecuteWithNoArguments(HWStorage  hwStorage)
         {
-            int contor = 0;
+            bool fileFound = false;
             foreach (RoomTuple entry in hwStorage.ROOM.table)
             {
-                if (entry != null)
+                if (entry != null && entry.name != "?")
                 {
-                    contor++;
+                    fileFound = true;
                     Console.WriteLine(entry.DisplayMinimalDetails() );
                 }
             }
 
-            if (contor == 0)
+            if (!fileFound)
                 Console.WriteLine("No files are present.");
         }
         private void ExecuteWithAllArgument(HWStorage  hwStorage)
@@ -81,16 +72,15 @@ namespace PrivateOS.Business
             int contor = 0;
             foreach (RoomTuple entry in hwStorage.ROOM.table)
             {
-                if (entry != null)
+                if (entry != null && entry.name != "?")
                 {
                     contor++;
-                    Console.WriteLine(entry.DisplayAllDetails() );
+                    Console.WriteLine(entry.DisplayAllDetails());
                 }
             }
 
             if (contor == 0)
                 Console.WriteLine("No files are present.");
         }
-
     }
 }

@@ -4,42 +4,27 @@ namespace PrivateOS.Business
 {
     public class CreateCommand : ICommand
     {
-        public string Name => "create";
-
-        public string Description => "Create a file with given name, extension, size and type of content.";
-
-        public List<CommandArgument> Arguments =>
-            new List<CommandArgument>()
-            {
-                new CommandArgument()
-                {
-                    Name = "-alfa",
-                    Description = "Generates alfabetic characters until given size is full",
-                },
-                new CommandArgument()
-                {
-                    Name = "-num",
-                    Description = "Generates numbers, 0-9, until given size is full",
-                },
-                new CommandArgument()
-                {
-                    Name = "-hex",
-                    Description = "Generates hexazecimal numbers, 0-9, until given size is full",
-                },
-            };
-
         public List<string> actualArguments { get; }
         private Iterator charGenerator { get; set; }
+        private string[] contentTypes;
 
         public CreateCommand(List<string> actualArguments)
         {
             this.actualArguments = actualArguments;
+            contentTypes = new string[3]
+            {
+                "-num",
+                "-alfa",
+                "-hex"
+            };
         }
 
         public void Execute(HWStorage storage)
         {
             try
             {
+                WarningMaxNoOfArgs(3);
+
                 string fileName, fileExtension, contentType;
                 ushort sizeInBytes;
 
@@ -137,10 +122,9 @@ namespace PrivateOS.Business
             if (fileName.Length == 0 || fileExtension.Length == 0  || sizeInBytes == 0 || contentType.Length == 0)
                 throw new ArgumentNullException("Missing mandatory argument - create command");
 
-            //if (!contentType.Equals("-num") && !contentType.Equals("-alfa") && !contentType.Equals("-hex"))
-            foreach (var item in Arguments)
+            foreach (var item in contentTypes)
             {
-                if (item.Name.Equals(contentType))
+                if (item.Equals(contentType))
                     return;
             }   
             throw new ArgumentNotValidException("Content type asked in create command is not valid!");
@@ -176,5 +160,10 @@ namespace PrivateOS.Business
             }
         }
 
+        public void WarningMaxNoOfArgs(int maxNoOfArgs)
+        {
+            if (actualArguments.Count > maxNoOfArgs)
+                Prompter.NoImplementionForMoreThanNoOfArgs(maxNoOfArgs);
+        }
     }
 }
