@@ -30,23 +30,10 @@ namespace PrivateOS.Business
 
                 ParseArguments(storage, out fileName, out fileExtension, out sizeInBytes, out contentType);
 
-                if (!storage.ROOM.ExistsFreeEntry())
-                    throw new RoomIsFullException();
-                if (!storage.FAT.CheckFreeAllocationChain(sizeInBytes))
-                    throw new FatIsFullException();
-
-                //alocate the allocation chain for a file in fat
-                //and save the cluseters to write the file 
-                List<ushort> allocationChainFromFat = 
-                    storage.FAT.AllocateChainForFile(sizeInBytes);
-
-                //get the first free entry in room 
-                ushort indexOfFreeEntryInRoom =
-                    (ushort)storage.ROOM.GetFirstFreeEntry();
-                //build and add the tuple in room
-                RoomTuple newRoomTuple =  
-                    new RoomTuple(fileName, fileExtension, sizeInBytes, allocationChainFromFat[0]);
-                storage.ROOM.AddTupleInRoom(indexOfFreeEntryInRoom, newRoomTuple);
+                List<ushort> allocationChainFromFat 
+                    = CommonCommandMethods
+                        .AllocateResourcesForNewFile
+                        (storage, fileName, fileExtension, sizeInBytes);
 
                 //calculate how many chars will be written in given size
                 int charSize = int.Parse(ConfigurationManager.AppSettings["CharSizeInBytes"]);
@@ -58,6 +45,7 @@ namespace PrivateOS.Business
                 //start writing
                 charGenerator = new Iterator(contentType);
                 WriteFile(storage, allocationChainFromFat, fileSizeByCharSize, clusterCharCapacity);
+
             }catch(Exception e)
             {
                 throw;

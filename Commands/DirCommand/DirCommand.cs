@@ -15,6 +15,8 @@ namespace PrivateOS.Business
 
         public void Execute(HWStorage hwStorage)
         {
+            // Se afiseaza un warning daca exista mai mult de 1 argument specificat
+
             Console.WriteLine("Files:");
 
             WarningMaxNoOfArgs(1);
