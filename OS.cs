@@ -39,6 +39,7 @@ namespace PrivateOS
                     commandInstance.Execute(Storage);
 
                     if(command is CopyCommand || 
+                       command is CreateCommand ||
                        command is DeleteCommand ||
                        command is RenameCommand)
                     {

@@ -18,11 +18,13 @@ namespace PrivateOS.Business
                 "-hex"
             };
         }
-        // parsam 2 argumente, 4 denumiri
-        // daca nu exista fisierul -> throw
-        // Apleam create command pe : newName.newExtension size -contentType
+
+
         public void Execute(HWStorage storage)
         {
+            // Parsam 2 argumente, 4 denumiri
+            // Daca nu exista fisierul -> throw (early return)
+            // --mecanismul de copiere--
             try
             {
                 CommonCommandMethods.WarningMaxNoOfArgs(2, actualArguments.Count);
@@ -37,15 +39,24 @@ namespace PrivateOS.Business
                 RoomTuple entryToFileToCopy 
                     = CommonCommandMethods.CheckIfFileExists(oldName, oldExtension, storage);
 
+                //alocarea resurselor fisierului nou
                 List<ushort> allocationChainFromFat
                     = CommonCommandMethods
                         .AllocateResourcesForNewFile
                         (storage, entryToFileToCopy.name, entryToFileToCopy.extension, entryToFileToCopy.size);
 
-                //var allocationChainElementToCopyFromFat =  ReadClusters(FAU);
-                //WriteClusters(allocationChainFromFat)
+                //identificarea AU de copiat
+                List<ushort> allocationChainElementToCopyFromFat 
+                    = storage.FAT
+                    .ReadChain(entryToFileToCopy.firstAllocationUnit);
 
-            }catch(Exception e)
+                //Copierea efectiva
+                storage
+                    .CopyChainValuesIntoGivenChain
+                    (allocationChainFromFat, allocationChainElementToCopyFromFat);
+
+            }
+            catch(Exception e)
             {
                 throw;
             }

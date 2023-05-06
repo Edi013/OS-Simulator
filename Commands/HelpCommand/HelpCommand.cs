@@ -27,8 +27,7 @@ namespace PrivateOS.Business
         public void Execute(HWStorage hwStorage)
         {
             // Executa presentarea fiecarei comenzi.
-            // Se afiseaza un warning daca exista argumente specificate intrucat comanda nu are argumente valide
-            WarningMaxNoOfArgs(0);
+            CommonCommandMethods.WarningMaxNoOfArgs(0, actualArguments.Count);
 
             Console.WriteLine("Commands:\n");
             foreach (var presentationCommand in presentationCommands)
@@ -49,11 +48,6 @@ namespace PrivateOS.Business
                 Console.WriteLine();
             }
             
-        }
-        public void WarningMaxNoOfArgs(int maxNoOfArgs)
-        {
-            if (actualArguments.Count > maxNoOfArgs)
-                Prompter.NoImplementionForMoreThanNoOfArgs(maxNoOfArgs);
         }
 
     }

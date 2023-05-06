@@ -21,9 +21,12 @@ namespace PrivateOS.Business
 
         public void Execute(HWStorage storage)
         {
+            // Parsam 3 argumente, 4 variabile
+            // Daca nu exista resurse pentru alocare -> throw (early return)
+            // --mecanismul de creare--
             try
             {
-                WarningMaxNoOfArgs(3);
+                CommonCommandMethods.WarningMaxNoOfArgs(3, actualArguments.Count);
 
                 string fileName, fileExtension, contentType;
                 ushort sizeInBytes;
@@ -126,7 +129,7 @@ namespace PrivateOS.Business
             for (int clusterNo = 0; clusterNo < allocationChainFromFat.Count; clusterNo++)
             {
                 var allocationUnitFromStorage = 
-                    storage.GetStorageCluster(
+                    storage.CreateStorageCluster(
                         allocationChainFromFat[clusterNo]);
 
                 if(clusterNo == allocationChainFromFat.Count - 1)
@@ -140,18 +143,14 @@ namespace PrivateOS.Business
         }
         private void WriteCluster(AllocationUnit cluster, int noOfCharsToWrite)
         {
-            cluster = new AllocationUnit();
+            //cluster = new AllocationUnit();
             //Scrierea efectiva pe 'disk' 
             for (int i = 0; i < noOfCharsToWrite; i++)
             {
-                cluster.Content[i] = charGenerator.Next();
+                var character = charGenerator.Next();
+                cluster.Content[i] = character;
             }
         }
 
-        public void WarningMaxNoOfArgs(int maxNoOfArgs)
-        {
-            if (actualArguments.Count > maxNoOfArgs)
-                Prompter.NoImplementionForMoreThanNoOfArgs(maxNoOfArgs);
-        }
     }
 }

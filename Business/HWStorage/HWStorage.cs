@@ -22,13 +22,11 @@ namespace PrivateOS.Business
                 int.Parse(ConfigurationManager.AppSettings["ROOMSize"]);
             this.Storage = new AllocationUnit[usableClusters];
         }
-        public AllocationUnit GetStorageCluster(int indexFromFat)
+        public AllocationUnit CreateStorageCluster(int indexFromFat)
         {
+
             int indexFromStorage = FromFatIndexToStorageIndex(indexFromFat);
-            return GetCluster(indexFromStorage);
-        }
-        private AllocationUnit GetCluster(int indexFromStorage)
-        {
+            Storage[indexFromStorage] = new AllocationUnit();
             return Storage[indexFromStorage];
         }
         private int FromFatIndexToStorageIndex(int indexFromFat)
@@ -42,6 +40,28 @@ namespace PrivateOS.Business
             return indexFromFat 
                 - int.Parse(ConfigurationManager.AppSettings["FATSize"])
                 - int.Parse(ConfigurationManager.AppSettings["ROOMSize"]);
+        }
+        public void CopyChainValuesIntoGivenChain (List<ushort> allocationChainToCopy, List<ushort> allocationChainToCopyTo)
+        {
+            /*
+             Avand doua lanturi de alocare din fat, unul se copiaza in celalalt:
+
+             Pentru fiecare cluster:
+                -- Transformam indexii din tabla FAT, pentru acesarea structurii Storage din clasa HWStorage
+                    --- Transformarea se face atat pentru clusterele de copiat, cat si pentru cele in care se copiaza.
+                -- Accesam fiecare AU din Storage de copiat
+                -- Fiecare caracter se copiaza in AU corespunzatoare lantului de alocare al noului fisier.
+             */
+            for (int noClustersToCopy = 0; noClustersToCopy < allocationChainToCopy.Count; noClustersToCopy++)
+            {
+                int storageIndexOfClusterToCopy = FromFatIndexToStorageIndex(allocationChainToCopy[noClustersToCopy]); 
+                int storageIndexOfClusterToCopyTo = FromFatIndexToStorageIndex(allocationChainToCopyTo[noClustersToCopy]); 
+                for (int j = 0; j <  Storage[storageIndexOfClusterToCopy].Content.Length; j++)
+                {
+                    Storage[storageIndexOfClusterToCopyTo].Content[j] =
+                        Storage[storageIndexOfClusterToCopy].Content[j];
+                }
+            }
         }
     }
 }

@@ -17,9 +17,8 @@ namespace PrivateOS.Business
         {
             // Se afiseaza un warning daca exista mai mult de 1 argument specificat
 
-            Console.WriteLine("Files:");
 
-            WarningMaxNoOfArgs(1);
+            CommonCommandMethods.WarningMaxNoOfArgs(1, actualArguments.Count);
 
             //In functie de ce argument exista, executam corespunzator comanda
             if (!actualArguments.Any())
@@ -44,18 +43,14 @@ namespace PrivateOS.Business
             }
         }
 
-        public void WarningMaxNoOfArgs(int maxNoOfArgs)
-        {
-            if (actualArguments.Count > maxNoOfArgs)
-                Prompter.NoImplementionForMoreThanNoOfArgs(maxNoOfArgs);
-        }
-
         /*
          Metodele pentru afisare sunt similare.
          Difera doar detaliile afisate
         */
         private void ExecuteWithNoArguments(HWStorage  hwStorage)
         {
+            Console.WriteLine("Files:");
+
             bool fileFound = false;
             foreach (RoomTuple entry in hwStorage.ROOM.table)
             {
@@ -71,6 +66,8 @@ namespace PrivateOS.Business
         }
         private void ExecuteWithAllArgument(HWStorage  hwStorage)
         {
+            Console.WriteLine("Files:");
+
             int contor = 0;
             foreach (RoomTuple entry in hwStorage.ROOM.table)
             {

@@ -54,6 +54,21 @@ namespace PrivateOS.Business
             }
         }
 
+        public List<ushort> ReadChain(ushort indexOfFAU)
+        {
+            List<ushort> chain = new List<ushort>();
+
+            ushort indexOfNextCluster = indexOfFAU;
+            chain.Add(indexOfNextCluster);
+
+            while (table[indexOfNextCluster] != 2)
+            {
+                indexOfNextCluster = table[indexOfNextCluster];
+                chain.Add(indexOfNextCluster);
+            }
+
+            return chain;
+        }
         public bool CheckFreeAllocationChain(int fileSize)
         {
             int noOfClustersNeeded = CalculateNumberOfClustersNeeded(fileSize);

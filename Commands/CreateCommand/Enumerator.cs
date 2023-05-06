@@ -17,12 +17,12 @@ namespace PrivateOS.Business
             position = 0;
             switch (contentType.ToLower())
             {
-                case "-num":
+                case "-alfa":
                     {
                         values = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToList();
                         break;
                     }
-                case "-alfa":
+                case "-num":
                     {
                         values = "0123456789".ToList();
                         break;
@@ -37,7 +37,7 @@ namespace PrivateOS.Business
         }
         public char Next()
         {
-            if (position == values.Count - 1)
+            if (position == values.Count)
                 Reset();
             return values[position++];
         }

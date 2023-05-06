@@ -20,12 +20,8 @@ namespace PrivateOS.Business
 
         public void Execute(HWStorage hwStorage)
         {
-            WarningMaxNoOfArgs(0);
+            CommonCommandMethods.WarningMaxNoOfArgs(0, actualArguments.Count);
             return;
-        }
-        public void WarningMaxNoOfArgs(int maxNoOfArgs)
-        {
-            Prompter.NoImplementionForMoreThanNoOfArgs(maxNoOfArgs);
         }
     }
 }

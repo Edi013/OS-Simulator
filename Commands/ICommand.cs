@@ -9,7 +9,6 @@ namespace PrivateOS.Business
     public interface ICommand
     {
         public List<string> actualArguments { get; }
-        public void WarningMaxNoOfArgs(int maxNoOfArgs);
         public void Execute(HWStorage hwStorage);
     }
 }

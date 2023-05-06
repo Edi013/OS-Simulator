@@ -11,7 +11,7 @@
 
         public void Execute(HWStorage hwStorage)
         {
-            WarningMaxNoOfArgs(2);
+            CommonCommandMethods.WarningMaxNoOfArgs(2, actualArguments.Count);
 
             string name;
             string extension;
@@ -50,11 +50,6 @@
                 name == "" || extension == ""  ||
                 name == " " || extension == " ")
                 throw new ArgumentNotFoundException("At least one argument of delete command was not found.");
-        }
-        public void WarningMaxNoOfArgs(int maxNoOfArgs)
-        {
-            if (actualArguments.Count > maxNoOfArgs)
-                Prompter.NoImplementionForMoreThanNoOfArgs(maxNoOfArgs);
         }
     }
 }

@@ -20,6 +20,8 @@
                     return new DeleteCommand(attributes);
                 case "rename":
                     return new RenameCommand(attributes);
+                case "copy":
+                    return new CopyCommand(attributes);
 
                 default:
                     throw new CommandNotFoundException();
