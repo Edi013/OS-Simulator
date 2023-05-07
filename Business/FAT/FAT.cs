@@ -127,6 +127,29 @@ namespace PrivateOS.Business
             }
             return noOfClustersNeeded;
         }
+        public List<ushort> IdentifyAllocationChainBasedOnFAU(int FAU)
+        {
+            if (FAU == null || FAU < 575)
+                throw new Exception("Index was null or <575 accesing FAT.");
+
+            ushort currentValue = (ushort)FAU;
+            List<ushort> allocationChain = new List<ushort>();
+            allocationChain.Add(currentValue);
+
+            while (table[currentValue] != 0)
+            {
+                currentValue = table[currentValue];
+                allocationChain.Add(currentValue);
+            }
+            return allocationChain;
+        }
+        public void DeleteAllocationChainWithFAU(List<ushort> allocationChainToDelete)
+        {
+            for (int cluster = 0; cluster < allocationChainToDelete.Count; cluster++)
+            {
+                table[allocationChainToDelete[cluster]] = FAT.UnusedCluster;
+            }
+        }
     }
 }
 

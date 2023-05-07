@@ -40,20 +40,23 @@ namespace PrivateOS.Business
                     = CommonCommandMethods.CheckIfFileExists(oldName, oldExtension, storage);
 
                 //alocarea resurselor fisierului nou
-                List<ushort> allocationChainFromFat
+                List<ushort> allocationChainFromFatToCopyTo
                     = CommonCommandMethods
                         .AllocateResourcesForNewFile
-                        (storage, entryToFileToCopy.name, entryToFileToCopy.extension, entryToFileToCopy.size);
+                        (storage, newName, newExtension, entryToFileToCopy.size);
+
+                //Initializarea noului lant de alocare 
+                storage.InitialiazeClusters(allocationChainFromFatToCopyTo);
 
                 //identificarea AU de copiat
-                List<ushort> allocationChainElementToCopyFromFat 
+                List<ushort> allocationChainFromFatToCopy 
                     = storage.FAT
                     .ReadChain(entryToFileToCopy.firstAllocationUnit);
 
                 //Copierea efectiva
                 storage
                     .CopyChainValuesIntoGivenChain
-                    (allocationChainFromFat, allocationChainElementToCopyFromFat);
+                    (allocationChainFromFatToCopy, allocationChainFromFatToCopyTo);
 
             }
             catch(Exception e)

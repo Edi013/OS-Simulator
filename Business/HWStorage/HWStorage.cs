@@ -22,14 +22,13 @@ namespace PrivateOS.Business
                 int.Parse(ConfigurationManager.AppSettings["ROOMSize"]);
             this.Storage = new AllocationUnit[usableClusters];
         }
-        public AllocationUnit CreateStorageCluster(int indexFromFat)
+        public AllocationUnit GetClusterHavingFatIndex(int indexFromFat)
         {
 
             int indexFromStorage = FromFatIndexToStorageIndex(indexFromFat);
-            Storage[indexFromStorage] = new AllocationUnit();
             return Storage[indexFromStorage];
         }
-        private int FromFatIndexToStorageIndex(int indexFromFat)
+        public int FromFatIndexToStorageIndex(int indexFromFat)
         {
             // 4096 clusters
             // 0   ... 511  = FAT     (512)
@@ -54,14 +53,46 @@ namespace PrivateOS.Business
              */
             for (int noClustersToCopy = 0; noClustersToCopy < allocationChainToCopy.Count; noClustersToCopy++)
             {
+                if (allocationChainToCopy[noClustersToCopy] == 0)
+                    break;
                 int storageIndexOfClusterToCopy = FromFatIndexToStorageIndex(allocationChainToCopy[noClustersToCopy]); 
-                int storageIndexOfClusterToCopyTo = FromFatIndexToStorageIndex(allocationChainToCopyTo[noClustersToCopy]); 
-                for (int j = 0; j <  Storage[storageIndexOfClusterToCopy].Content.Length; j++)
+                
+                int storageIndexOfClusterToCopyTo = FromFatIndexToStorageIndex(allocationChainToCopyTo[noClustersToCopy]);
+               
+                int clusterSizeInChars = 
+                    int.Parse(ConfigurationManager.AppSettings["AllocationUnitSize"]) / int.Parse(ConfigurationManager.AppSettings["CharSizeInBytes"]);
+                for (int j = 0; j < clusterSizeInChars; j++) // Storage[storageIndexOfClusterToCopy].Content.Length
                 {
                     Storage[storageIndexOfClusterToCopyTo].Content[j] =
                         Storage[storageIndexOfClusterToCopy].Content[j];
                 }
             }
+        }
+
+        public void InitialiazeClusters(List<ushort> allocationChainFromFatToCopyTo)
+        {
+            for (int i = 0; i < allocationChainFromFatToCopyTo.Count; i++)
+            {
+                int storageIndexOfClusterToCopyTo = FromFatIndexToStorageIndex(allocationChainFromFatToCopyTo[i]);
+                CreateCluster(storageIndexOfClusterToCopyTo);
+            }
+        }
+        private void CreateCluster(int indexFromStorage)
+        {
+            Storage[indexFromStorage] = new AllocationUnit();
+        }
+
+        public void DeleteClusters(List<ushort> allocationChainFromFatToCopyTo)
+        {
+            for (int cluster = 0; cluster < allocationChainFromFatToCopyTo.Count; cluster++)
+            {
+                int storageIndexOfClusterToCopyTo = FromFatIndexToStorageIndex(allocationChainFromFatToCopyTo[cluster]);
+                DeleteCluster(storageIndexOfClusterToCopyTo);
+            }
+        }
+        private void DeleteCluster(int indexFromStorage)
+        {
+            Storage[indexFromStorage] = null;
         }
     }
 }

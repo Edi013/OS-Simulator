@@ -19,12 +19,22 @@
 
             CheckIfFileExists(name, hwStorage);
 
+            //'Stergem' fisierul din ROOM
             RoomTuple element =
                 hwStorage.ROOM.table
                 .Where(x => x.name.Equals(name) &&
                             x.extension.Equals(extension))
                 .First();
-            element.name = "?"; 
+            element.name = "?";
+
+            var allocationChainToDelete =
+                    hwStorage.FAT.IdentifyAllocationChainBasedOnFAU(element.firstAllocationUnit);
+
+            //'Stergem' fisierul din FAT
+            hwStorage.FAT.DeleteAllocationChainWithFAU(allocationChainToDelete);
+
+            //Stergerea efectiva a fisierului din obiectul Storage
+            hwStorage.DeleteClusters(allocationChainToDelete);
         }
 
         private void CheckIfFileExists(string name, HWStorage storage)

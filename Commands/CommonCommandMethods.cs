@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -52,12 +53,28 @@ namespace PrivateOS.Business
         public static List<ushort> AllocateResourcesForNewFile
             (HWStorage storage, string fileName, string fileExtension, int sizeInBytes)
         {
+            sizeInBytes = NormalizeFileSizeBasedOnCharSize(sizeInBytes);
             CheckForFreeEntryInRoom(storage);
             CheckForFreeAllocantionChainInFat(storage, sizeInBytes);
             List<ushort> allocationChain = AllocateChainInFat(storage, sizeInBytes);
             AllocateEntryInRoom(storage, fileName, fileExtension, (ushort)sizeInBytes, allocationChain[0]);
 
             return allocationChain;
+        }
+        private static int NormalizeFileSizeBasedOnCharSize(int givenFileSizeInBytes)
+        {
+            /*
+             'Normalizam' dimensiunea fisierului:
+            Exemplu: 
+            - dimensiunea unui char = 5;
+            - dimensiunea fisierului de alocat = 24;
+            - doar 24 / 5 caractere se pot scrie, iar 24 % 5 bytes raman liberi.
+            Astfel, prin normalizare, putem specifica dimensiunea exacta a fisierului in root. 
+             */
+            int charSize = int.Parse(ConfigurationManager.AppSettings["CharSizeInBytes"]);
+
+            return  
+                givenFileSizeInBytes - (givenFileSizeInBytes % charSize);
         }
         private static void CheckForFreeEntryInRoom(HWStorage storage)
         {

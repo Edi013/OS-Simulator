@@ -123,21 +123,29 @@ namespace PrivateOS.Business
 
         private void WriteFile(HWStorage storage, List<ushort> allocationChainFromFat, int fileSizeByCharSize, int clusterCharCapacity)
         {
-            //Incepem scriere pe disc.
-            //Pentru fiecare cluster - daca nu e ultimul, scriem capacitatea maxima admisa.
-            //                       - daca  e ultimul, scriem diferenta mai jos calculata.
+            // Incepem scriere pe disc.
+            // Initializam clusterele
+            // Pentru fiecare cluster - (*) obtinem clusterul avand indexul din FAT 
+            //                        - (**) daca nu e ultimul, scriem capacitatea maxima admisa.
+            //                        - (***) daca  e ultimul, scriem diferenta mai jos calculata.
+
+            storage.InitialiazeClusters(allocationChainFromFat);
+            
             for (int clusterNo = 0; clusterNo < allocationChainFromFat.Count; clusterNo++)
             {
+                // (*)
                 var allocationUnitFromStorage = 
-                    storage.CreateStorageCluster(
+                    storage.GetClusterHavingFatIndex(
                         allocationChainFromFat[clusterNo]);
 
-                if(clusterNo == allocationChainFromFat.Count - 1)
+                // (**) 
+                if (clusterNo == allocationChainFromFat.Count - 1)
                 {
                     int remainingNoOfChars = fileSizeByCharSize - (clusterNo * clusterCharCapacity);
                     WriteCluster(allocationUnitFromStorage, remainingNoOfChars);
                     break;
                 }
+                // (***)
                 WriteCluster(allocationUnitFromStorage, clusterCharCapacity);
             }
         }
