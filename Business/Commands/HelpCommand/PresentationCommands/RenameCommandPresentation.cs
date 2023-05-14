@@ -10,7 +10,7 @@ namespace PrivateOS.Business
     {
         public string Name => "rename";
 
-        public string Description => "Replaces the name of a file. If the file doesn't exists, warning will be displayed.";
+        public string Description => "Change the name of a file. If the file doesn't exists, warning will be displayed.";
         public string Structure => "rename file_old_name.extension file_new_name.extension";
         public List<CommandArgument> Arguments =>
             new List<CommandArgument>()

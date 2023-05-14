@@ -37,7 +37,7 @@ namespace PrivateOS.Business
                 Console.WriteLine("\tArguments:");
                 if(!presentationCommand.Arguments.Any())
                 {
-                    Console.WriteLine("No arguments.");
+                    Console.WriteLine("\tNo arguments.");
                     Console.WriteLine();
                     continue;
                 }
