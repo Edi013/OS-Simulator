@@ -80,7 +80,7 @@ namespace PrivateOS.Business
 
                 fileExtension = fileNameAndExtension[1];
                 int maximumAllowedNoOfCharsAsExtensionInRoom = (int)Math.Floor
-                    (double.Parse(ConfigurationManager.AppSettings["RoomEntrySizeOfName"]) / double.Parse(ConfigurationManager.AppSettings["CharSizeInBytes"]));
+                    (double.Parse(ConfigurationManager.AppSettings["RoomEntrySizeOfExtension"]) / double.Parse(ConfigurationManager.AppSettings["CharSizeInBytes"]));
                 if (fileName.Length > maximumAllowedNoOfCharsAsExtensionInRoom)
                     throw new NameIsTooLongException($"File extension is too long.\nMaximum number of chars allowed is {maximumAllowedNoOfCharsAsNameInRoom}");
 
