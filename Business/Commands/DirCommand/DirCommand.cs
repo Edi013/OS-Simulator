@@ -16,8 +16,6 @@ namespace PrivateOS.Business
         public void Execute(HWStorage hwStorage)
         {
             // Se afiseaza un warning daca exista mai mult de 1 argument specificat
-
-
             CommonCommandMethods.WarningMaxNoOfArgs(1, actualArguments.Count);
 
             //In functie de ce argument exista, executam corespunzator comanda
