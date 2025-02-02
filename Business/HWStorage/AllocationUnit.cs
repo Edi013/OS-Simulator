@@ -13,7 +13,7 @@ namespace PrivateOS
         /*
         Alocation Unit refers to a single cluster.
         A cluster is a piece of storage with chosen clusterSize.
-        This OS is form of clusters, the numbers is chosen.
+        This OS is composed of clusters, the numbers is chosen by the user.
         The choices happen when 'the storage' is formated.
          */
 
